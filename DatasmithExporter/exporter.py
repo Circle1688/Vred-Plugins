@@ -7,6 +7,7 @@ import logging
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 from itertools import chain
+import json
 
 import vrFileIO
 import vrFileDialog
@@ -1436,6 +1437,18 @@ class DatasmithFBXExporter():
                 # logging.info('Preserving unused switch material variants...')
                 # matsToPreserve = self.getMaterialsToPreserve()
                 # self.assignMatsToTempGeometry(matsToPreserve)
+
+                # export material data ovmt
+                logging.info('Export material data ovmt...')
+                materials_data = {}
+                materials = vrMaterialService.getAllMaterials()
+                for material in materials:
+                    bound_nodes = vrMaterialService.findNodesWithMaterial(material)
+                    nodes = [node.getName() for node in bound_nodes]
+                    materials_data[material.getName()] = nodes
+
+                with open(filenameNoExt + ".ovmt", "w", encoding="utf-8") as f:
+                    f.write(json.dumps(materials_data))
 
                 # Save FBX scene
                 logging.info('Saving FBX scene...')

@@ -40,7 +40,7 @@ except:
 
 import uiTools
 
-version = 'V1.8 - VRED 2023.2 -'
+version = 'V2.1 - VRED 2023.2 -'
 
 # Load a pyside form and the widget base from a ui file that describes the layout
 form, base = uiTools.loadUiType('XPengVRTools.ui')
@@ -1090,6 +1090,9 @@ class XPengVRTools(form, base):
         msgBox.exec_()
 
     def renameNode_recursive(self, node):
+        pattern = r'\W+'
+        rep_name = re.sub(pattern, "_", node.getName())
+        node.setName(rep_name)
         others = []
         for child in node.getChildren():
             geo = vrdGeometryNode(child)
@@ -1100,7 +1103,7 @@ class XPengVRTools(form, base):
                 center = child.getWorldBoundingBox().getCenter()
 
                 idx = self.unique_idx(trig_count, vertex_count, center.x(), center.y(), center.z())
-                geo.setName(node.getName() + '_' + idx)
+                geo.setName(rep_name + '_' + idx)
             else:
                 others.append(child)
 
